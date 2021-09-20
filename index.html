@@ -61,7 +61,7 @@ BinaryReader.prototype = {
     },
 
     getUint16: function() {
-        return ((this.getUint8() << 8) | this.getUint8()) >>> 0;
+        return (this.getUint8() << 8) | this.getUint8();
     },
 
     getUint32: function() {
@@ -486,9 +486,6 @@ dropTarget.ondrop = function(e) {
 
 };
 
-dropTarget.addEventListener("drop", function(e) {
-    setTimeout(function() {layout.go(); }, 500);
-});
 
 </script>
 </html>
