@@ -61,7 +61,7 @@ BinaryReader.prototype = {
     },
 
     getUint16: function() {
-        return (this.getUint8() << 8) | this.getUint8();
+        return ((this.getUint8() << 8) | this.getUint8()) >>> 0;
     },
 
     getUint32: function() {
@@ -88,6 +88,7 @@ BinaryReader.prototype = {
     },
 
     get2Dot14: function() {
+        // 100000000000000
         return this.getInt16() / (1 << 14);
     },
 
