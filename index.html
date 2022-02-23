@@ -14,6 +14,7 @@
       font-size: 22px;
     }
   </style>
+  <script src="./opentype.js"></script>
 </head>
 <body>
   <div id="dropTarget">
@@ -105,9 +106,9 @@ BinaryReader.prototype = {
     },
 
     getDate: function() {
-        var macTime = this.getUint32() * 0x100000000 + this.getUint32();
-        var utcTime = macTime * 1000 + Date.UTC(1904, 1, 1);
-        return new Date(utcTime);
+        var macTime = this.getUint32() * 4294967296 + this.getUint32();
+        var utcTime = macTime * 1000 + Date.UTC(1904, 0, 1);
+        return new Date(utcTime).toLocaleString();
     }
 };
 
@@ -403,6 +404,7 @@ TrueTypeFont.prototype = {
     drawGlyph: function(index, ctx) {
 
         var glyph = this.readGlyph(index);
+        console.log(glyph)
 
         if ( glyph === null || glyph.type !== "simple" ) {
             return false;
@@ -486,6 +488,18 @@ dropTarget.ondrop = function(e) {
     };
 
 };
+
+
+
+// opentype.js test
+
+opentype.load('./HanyiSentyCrayon.ttf', (err, font) => {
+    if (err) {
+        console.error(err)
+        return
+    }
+    console.log(font)
+})
 
 
 </script>
