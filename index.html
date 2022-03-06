@@ -20,7 +20,9 @@
   <div id="dropTarget">
     drop ttf file here
   </div>
-  <div id="font-container"></div>
+  <div id="font-container">
+      <canvas id="test_canvas" ></canvas>
+  </div>
 </body>
 <script>
 
@@ -404,10 +406,10 @@ TrueTypeFont.prototype = {
     drawGlyph: function(index, ctx) {
 
         var glyph = this.readGlyph(index);
-        console.log(glyph)
+        // console.log(glyph)
 
         if ( glyph === null || glyph.type !== "simple" ) {
-            return false;
+            return ;
         }
 
         var p = 0,
@@ -431,7 +433,7 @@ TrueTypeFont.prototype = {
             p += 1;
         }
 
-        return true;
+        return { glyph, status: true };
     }
 };
 
@@ -451,6 +453,8 @@ function ShowTtfFile(arrayBuffer)
         container.removeChild(container.firstChild);
     }
 
+    const allGlyphs = []
+
     for( var i = 0; i < font.length; i++ ) {
         var canvas = document.createElement("canvas");
         canvas.style.border = "1px solid gray";
@@ -461,11 +465,15 @@ function ShowTtfFile(arrayBuffer)
         ctx.translate(-font.xMin, -font.yMin - height);
         ctx.fillStyle = "#000000";
         ctx.beginPath();
-        if (font.drawGlyph(i, ctx)) {
+        const { glyph, status } = font.drawGlyph(i, ctx)
+        allGlyphs.push(glyph)
+        if (status) {
             ctx.fill();
             container.appendChild(canvas);
         }
     }
+
+    console.log(allGlyphs)
 
 }
 
@@ -497,6 +505,16 @@ opentype.load('./HanyiSentyCrayon.ttf', (err, font) => {
     if (err) {
         console.error(err)
         return
+    } else {
+        const ctx = document.getElementById('test_canvas').getContext('2d');
+
+        // Construct a Path object containing the letter shapes of the given text.
+        // The other parameters are x, y and fontSize.
+        // Note that y is the position of the baseline.
+        const path = font.getPath('Hello, World!', 0, 150, 72);
+
+        // If you just want to draw the text you can also use font.draw(ctx, text, x, y, fontSize).
+        path.draw(ctx);
     }
     console.log(font)
 })
